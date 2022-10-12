@@ -19,7 +19,7 @@ int powerLevel(){
 
 //Ordinary foobars who are standing in a line have a strength of equal to their position in the line. 
 class Foobar{
-  protected:
+  private:
     string name; 
     int position;
   public: 
