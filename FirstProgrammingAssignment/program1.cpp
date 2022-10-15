@@ -12,43 +12,11 @@
 
 using namespace std;
 
-string readInput(string inputName);
-void* createFoobar(string name, string type);
+class Foobar;
+class Foo;
+class Bar;
 
-//Your program should loop through the input file only once, in a single pass adding information about each foobar into a vector of pointers to Foobar
-string readInput(string inputName){
-  ifstream input(inputName);
-  string type = "";
-  string name = "";
-  for (int i = 0; !input.eof(); i++){
-    getline(input, type, ' ');
 
-    //exit if we reach the end of the file. 
-    if(input.eof()){
-      break;
-    }
-
-    void* foobarObject; 
-    //protuces a foobar object
-    foobarObject = createFoobar(name, type);
-  }
-}
-
-//creates Foobar objects
-void* createFoobar(string name, string type){
-  if (!type.compare("foobar")){
-    Foobar output = Foobar(name);
-    return &output; 
-  }
-  else if (!type.compare("foo")){
-    Foo output = Foo(name);
-    return &output; 
-  }
-  else if (!type.compare("bar")){
-    Bar output = Bar(name);
-    return &output;
-  }
-}
 
 //Ordinary foobars who are standing in a line have a strength of equal to their position in the line. 
 class Foobar{
@@ -74,7 +42,7 @@ class Foobar{
     }
 
     //and to get the name
-    string getName() const{
+    virtual string getName() const{
       return name;
     }
 
@@ -106,7 +74,56 @@ class Bar : public Foobar{
   }
 };
 
-//just kind of runs everything
+//function prototypes
+string readInput(string inputName);
+Foobar* createFoobar(string name, string type);
+
+//Your program should loop through the input file only once, in a single pass adding information about each foobar into a vector of pointers to Foobar
+string readInput(string inputName){
+  ifstream input(inputName);
+  string type = "";
+  string name = "";
+
+  Foobar* foobarObject; 
+
+  for (int i = 0; !input.eof(); i++){
+    getline(input, type, ' ');
+    getline(input, name, '\n');
+
+    //exit if we reach the end of the file. 
+    if(input.eof()){
+      break;
+    }
+
+    //protuces a foobar object
+    foobarObject = createFoobar(name, type);
+    cout << foobarObject -> getName();
+  }
+}
+
+
+//creates Foobar objects and returns as a pointer
+Foobar* createFoobar(string name, string type){
+  Foobar* output = nullptr;
+
+  if (!type.compare("foobar")){
+    output = new Foobar(name);
+    return output; 
+  }
+  else if (!type.compare("foo")){
+    output = new Foo(name);
+    return output; 
+  }
+  else if (!type.compare("bar")){
+    output = new Bar(name);
+    return output;
+  }
+  cout << output;
+  return output;
+}
+
+
+//main
 int main(){
 
 
