@@ -75,16 +75,19 @@ class Bar : public Foobar{
 };
 
 //function prototypes
-string readInput(string inputName);
+vector<Foobar*> readInput(string inputName);
 Foobar* createFoobar(string name, string type);
+void printFoobarList(vector<Foobar*> input);
 
 //Your program should loop through the input file only once, in a single pass adding information about each foobar into a vector of pointers to Foobar
-string readInput(string inputName){
+vector<Foobar*> readInput(string inputName){
   ifstream input(inputName);
   string type = "";
   string name = "";
 
   Foobar* foobarObject; 
+
+  vector<Foobar*> line;
 
   for (int i = 0; !input.eof(); i++){
     getline(input, type, ' ');
@@ -97,8 +100,15 @@ string readInput(string inputName){
 
     //protuces a foobar object
     foobarObject = createFoobar(name, type);
-    cout << foobarObject -> getName();
+    line.push_back(foobarObject);
   }
+
+  //sets position to the correct one
+  for (int i = line.size(), j = 0; i > 0; i--, j++){
+    line[j]->setPosition(i);
+  }
+
+  return line;
 }
 
 
@@ -118,15 +128,15 @@ Foobar* createFoobar(string name, string type){
     output = new Bar(name);
     return output;
   }
-  cout << output;
   return output;
 }
 
+void printFoobarList(vector<Foobar*> input){
+  
+}
 
 //main
 int main(){
-
-
   readInput("sampleInput.txt");
   return 0;
 }
