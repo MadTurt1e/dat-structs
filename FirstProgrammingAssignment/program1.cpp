@@ -37,7 +37,7 @@ class Foobar{
     }
 
     //to get the strength 
-    int getStrength(){
+    virtual int getStrength(){
       return position;
     }
 
@@ -132,11 +132,14 @@ Foobar* createFoobar(string name, string type){
 }
 
 void printFoobarList(vector<Foobar*> input){
-  
+  for (int i = 0; i < input.size(); i++){
+    cout << input[i] -> getName() << " " << input[i] -> getStrength() << "\n";
+  }
+  return;
 }
 
 //main
 int main(){
-  readInput("sampleInput.txt");
+  printFoobarList(readInput("sampleInput.txt"));
   return 0;
 }
