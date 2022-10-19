@@ -78,6 +78,7 @@ class Bar : public Foobar{
 vector<Foobar*> readInput(string inputName);
 Foobar* createFoobar(string name, string type);
 void printFoobarList(vector<Foobar*> input);
+void outputFoobarList(vector<Foobar*> input, string outputName);
 
 //Your program should loop through the input file only once, in a single pass adding information about each foobar into a vector of pointers to Foobar
 vector<Foobar*> readInput(string inputName){
@@ -108,6 +109,7 @@ vector<Foobar*> readInput(string inputName){
     line[j]->setPosition(i);
   }
 
+  input.close();
   return line;
 }
 
@@ -138,8 +140,26 @@ void printFoobarList(vector<Foobar*> input){
   return;
 }
 
+void outputFoobarList(vector<Foobar*> input, string outputName){
+  ofstream output (outputName); 
+
+  for (int i = 0; i < input.size(); i++){
+    output << input[i] -> getName() << " " << input[i] -> getStrength() << "\n";
+  }
+
+  output.close();
+  return;
+}
+
 //main
 int main(){
-  printFoobarList(readInput("sampleInput.txt"));
+  string s;
+  cout << "Please input the name of your input file. \n";
+  cin >> s;
+  vector<Foobar*> list = readInput(s);
+
+  cout << "Please input the name of your output file. \n";
+  cin >> s;
+  outputFoobarList(list, s);
   return 0;
 }
