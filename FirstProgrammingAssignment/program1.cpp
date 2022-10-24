@@ -71,7 +71,7 @@ class Bar : public Foobar{
     //position +15
     int getStrength(){
       return getPosition()+15;
-  }
+      }
 };
 
 //function prototypes
