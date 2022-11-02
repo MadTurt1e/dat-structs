@@ -69,7 +69,7 @@ class SimpleList{
         virtual void push(){
 
         }
-        virtual void* pop(){
+        virtual T pop(){
 
         }
 
@@ -83,38 +83,59 @@ class SimpleList{
             size++;
         }
         //to insert a node at the end of the list
-        void insertAtEnd(){
-            //Creates a new node, and shoves it in between tail node and last node. 
-            Node temp = new Node(value, headerNode -> getNextValue());
+        void insertAtEnd(T value){
+            //Creates a new node, and bumps the tail node down one. 
+            Node temp = new Node(value, &tailNode);
             headerNode -> setNextValue(&temp);
 
             size++;
         }
         //to remove a node from the start of the list
         T removeAtStart(){
+            T output;
+            void* pointerToStart;
+            //do nothing if there is nothing
             if (size == 0){
                 return null;
             }
             else{
-
+                size--;
+                //point header to the second node, return value of first node, than exile first node to the shadow realm. 
+                pointerToStart = headerNode -> getNextvalue();
+                output = headerNode->getCurrentValue();
+                headerNode -> setNextValue(pointerToStart -> getNextValue());
+                delete pointerToStart;
+                return output;
             }
         }
 };
+
+template <typename T>
 class Stack : public SimpleList{
     public:
-        void push(){
+        Stack(string name) : SimpleList<T>(name){
 
         }
-        void* pop(){
+
+        void push(T value){
+
+        }
+        T pop(){
 
         }
 }; 
+
+template <typename T>
 class Queue : public SimpleList{
     public: 
+        Stack(string name) : SimpleList<T>(name){
+
+        }
+
         void push(){
             
         }
-        void* pop(){
+        T pop(){
 
         }
 };
