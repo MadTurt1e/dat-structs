@@ -4,6 +4,7 @@
 *******************************************************************/
 
 #include <iostream>
+#include <list>
 
 using namespace std;
 
@@ -47,7 +48,7 @@ class SimpleList{
     };
 
     Node* headerNode; 
-    Node* tailNode; 
+    Node* lastNode; 
     int size; 
 
     public: 
@@ -57,8 +58,8 @@ class SimpleList{
             name = nam; 
             size = 0;
             
-            tailNode = new Node(null, nullptr);
-            headerNode = new Node(null, &tailNode);
+            lastNode = new Node(null, nullptr);
+            headerNode = new Node(null, &lastNode);
         }
 
         string getName(){
@@ -84,9 +85,10 @@ class SimpleList{
         }
         //to insert a node at the end of the list
         void insertAtEnd(T value){
-            //Creates a new node, and bumps the tail node down one. 
-            Node temp = new Node(value, &tailNode);
-            headerNode -> setNextValue(&temp);
+            //A new node is now the last node, and the old last node is not. 
+            Node temp = new Node(value, nullptr);
+            lastNode -> setNextValue(&temp);
+            lastNode = temp;
 
             size++;
         }
@@ -100,7 +102,7 @@ class SimpleList{
             }
             else{
                 size--;
-                //point header to the second node, return value of first node, than exile first node to the shadow realm. 
+                //point header to the second node, return value of first node, than remove first node. 
                 pointerToStart = headerNode -> getNextvalue();
                 output = headerNode->getCurrentValue();
                 headerNode -> setNextValue(pointerToStart -> getNextValue());
@@ -118,10 +120,10 @@ class Stack : public SimpleList{
         }
 
         void push(T value){
-
+            insertAtStart(value);
         }
         T pop(){
-
+            return removeAtStart();
         }
 }; 
 
@@ -129,14 +131,14 @@ template <typename T>
 class Queue : public SimpleList{
     public: 
         Stack(string name) : SimpleList<T>(name){
-
-        }
-
-        void push(){
             
         }
-        T pop(){
 
+        void push(T value){
+            insertAtEnd(value);
+        }
+        T pop(){
+            return removeAtStart();
         }
 };
 
