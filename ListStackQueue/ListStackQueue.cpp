@@ -58,8 +58,8 @@ class SimpleList{
             name = nam; 
             size = 0;
             
-            lastNode = new Node(null, nullptr);
-            headerNode = new Node(null, &lastNode);
+            lastNode = new Node(nullptr, nullptr);
+            headerNode = new Node(nullptr, &lastNode);
         }
 
         string getName(){
@@ -86,9 +86,8 @@ class SimpleList{
         //to insert a node at the end of the list
         void insertAtEnd(T value){
             //A new node is now the last node, and the old last node is not. 
-            Node temp = new Node(value, nullptr);
-            lastNode -> setNextValue(&temp);
-            lastNode = temp;
+            Node temp = lastNode;
+            lastNode -> setCurrentValue(value);
 
             size++;
         }
@@ -143,5 +142,7 @@ class Queue : public SimpleList{
 };
 
 int main(){
+    SimpleList<int>* first = new SimpleList<int>("a");
+    cout << first -> getName();
     return 0;
 }
