@@ -150,9 +150,15 @@ class Queue : public SimpleList<T>{
         }
 };
 
+//returns a pointer to the correct simpleList with name
 template <typename T>
 SimpleList<T>* findList(list<SimpleList<T>*> searchThru, string name){
-
+    for (int i = 0; i < searchThru.size(); i++){
+        if (name.compare(searchThru.getName()) == 0){
+            return //stuff
+        }
+    }
+    return nullptr;
 }
 
 int main(){
