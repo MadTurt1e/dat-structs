@@ -160,6 +160,7 @@ int main(){
     list<SimpleList<double> *> listSLd; // all double stacks and queues
     list<SimpleList<string> *> listSLs; // all string stacks and queues
 
+    SimpleList<string>* pSLi;
     pSLi = new Queue<string>("sample1");
     pSLi -> push("a");
     pSLi -> push("b");
