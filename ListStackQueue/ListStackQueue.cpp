@@ -206,7 +206,6 @@ void readInput(string inputName, string outputName)
 
     for (int i = 0; !input.eof(); i++)
     {
-        output << "PROCESSING COMMAND: ";
         getline(input, action, ' ');
 
         // pop: only takes two entrees: pop, than name of stack / queue
@@ -214,7 +213,7 @@ void readInput(string inputName, string outputName)
         {
             getline(input, name, '\n');
 
-            output << action << " " << name << '\n';
+            output << "PROCESSING COMMAND: " << action << " " << name << '\n';
             // do something different for each different data type
             simpListType = name[0];
 
@@ -256,7 +255,7 @@ void readInput(string inputName, string outputName)
         // create: takes three entries: create, name, stack/queue
         if (action.compare("create") == 0)
         {
-            output << action << " " << name << " " << entry << '\n';
+            output << "PROCESSING COMMAND: " << action << " " << name << " " << entry << '\n';
             // steps: we check to make sure the name isn't already there, then we add the thing in.
 
             // this is kinda scuffed, but we want it so that any time no error appears, it just goes to the end of the thing. So it has to get to the end of the chain to actually go on.
@@ -302,7 +301,7 @@ void readInput(string inputName, string outputName)
         // push: takes three entries: push, name, data value
         if (action.compare("push") == 0)
         {
-            output << action << " " << name << " " << entry << '\n';
+            output << "PROCESSING COMMAND: " << action << " " << name << " " << entry << '\n';
             if (simpListType == 'i')
             {
                 try
@@ -385,13 +384,11 @@ int main()
     string input;
     string output;
 
-    // cout << "Enter name of input file: " << '\n';
-    // cin >> input;
-    // cout << "Enter name of output file: " << '\n';
-    // cin >> output;
+    cout << "Enter name of input file: " << '\n';
+    cin >> input;
+    cout << "Enter name of output file: " << '\n';
+    cin >> output;
 
-    input = "commands1.txt";
-    output = "output";
     readInput(input, output);
 
     return 0;
