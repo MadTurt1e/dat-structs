@@ -19,6 +19,16 @@ public:
     }
 };
 
+// if the list does not exist we want to throw an exception
+class NonexistantListException : public exception
+{
+public:
+    const char *what() const throw()
+    {
+        return "This name does not exist!\n";
+    }
+};
+
 // create an abstract base class called SimpleList that provides some aspects of singly linked list functionality
 template <typename T>
 class SimpleList
@@ -108,7 +118,7 @@ protected:
     // to insert a node at the end of the list
     void insertAtEnd(T value)
     {
-        // new last node, we set the last node to cout << pSLi -> pop() << '\n';the value of the new one, and change the last node's memory address
+        // new last node, we set the last node to pSLi -> pop() << '\n';the value of the new one, and change the last node's memory address
         Node *newLastNode = new Node(nullptr, nullptr);
         *tailNode = *(new Node(value, newLastNode));
         tailNode = newLastNode;
@@ -174,7 +184,7 @@ void readInput(string inputName, string outputName);
 template <typename T>
 SimpleList<T> *findList(list<SimpleList<T> *> searchThru, string name);
 template <typename T>
-void addToList(list<SimpleList<T> *> inputList, string name, string entry);
+void addToList(list<SimpleList<T> *> *inputList, string name, string entry);
 
 // IN: filename
 // OUT: output file
@@ -205,29 +215,33 @@ void readInput(string inputName, string outputName)
             getline(input, name, '\n');
 
             output << action << " " << name << '\n';
+            // do something different for each different data type
+            simpListType = name[0];
 
             try
             {
-                // do something different for each different data type
-                simpListType = name[0];
-
-                if (simpListType = 'i')
+                if (simpListType == 'i')
                 {
-                    output << findList(listSLi, name)->pop();
+                    output << "Value popped: " << findList(listSLi, name)->pop() << '\n';
                 }
-                if (simpListType = 'd')
+                else if (simpListType == 'd')
                 {
-                    output << findList(listSLd, name)->pop();
+                    output << "Value popped: " << findList(listSLd, name)->pop() << '\n';
                 }
-                if (simpListType = 's')
+                else if (simpListType == 's')
                 {
-                    output << findList(listSLs, name)->pop();
+                    output << "Value popped: " << findList(listSLs, name)->pop() << '\n';
                 }
             }
-            catch (EmptyListException)
+            catch (NonexistantListException e)
+            {
+                output << "ERROR: This name does not exist!" << '\n';
+            }
+            catch (EmptyListException e)
             {
                 output << "ERROR: This list is empty!" << '\n';
             }
+
             continue;
         }
         else
@@ -242,48 +256,87 @@ void readInput(string inputName, string outputName)
         // create: takes three entries: create, name, stack/queue
         if (action.compare("create") == 0)
         {
+            output << action << " " << name << " " << entry << '\n';
             // steps: we check to make sure the name isn't already there, then we add the thing in.
-            if (simpListType = 'i')
+
+            // this is kinda scuffed, but we want it so that any time no error appears, it just goes to the end of the thing. So it has to get to the end of the chain to actually go on.
+            try
             {
-                if (findList(listSLi, name) != nullptr)
+                findList(listSLi, name);
+                output << "ERROR: This name already exists!" << '\n';
+            }
+            catch (NonexistantListException e)
+            {
+                try
                 {
-                    addToList(listSLi, name, entry);
-                }
-                else
-                {
+                    findList(listSLd, name);
                     output << "ERROR: This name already exists!" << '\n';
-                    continue;
+                }
+                catch (NonexistantListException e)
+                {
+                    try
+                    {
+                        findList(listSLs, name);
+                        output << "ERROR: This name already exists!" << '\n';
+                    }
+                    catch (NonexistantListException e)
+                    {
+                        //runs if none of the lists have the NonexistantListException
+                        if (simpListType == 'i')
+                        {
+                            addToList(&listSLi, name, entry);
+                        }
+                        else if (simpListType == 'd')
+                        {
+                            addToList(&listSLd, name, entry);
+                        }
+                        else if (simpListType == 's')
+                        {
+                            addToList(&listSLs, name, entry);
+                        }
+                    }
                 }
             }
-            if (simpListType = 'd')
-            {
-                if (findList(listSLd, name) != nullptr)
-                {
-                    addToList(listSLd, name, entry);
-                }
-                else
-                {
-                    output << "ERROR: This name already exists!" << '\n';
-                    continue;
-                }
-            }
-            if (simpListType = 's')
-            {
-                if (findList(listSLs, name) != nullptr)
-                {
-                    addToList(listSLs, name, entry);
-                }
-                else
-                {
-                    output << "ERROR: This name already exists!" << '\n';
-                    continue;
-                }
-            }
+            continue;
         }
         // push: takes three entries: push, name, data value
         if (action.compare("push") == 0)
         {
-            
+            output << action << " " << name << " " << entry << '\n';
+            if (simpListType == 'i')
+            {
+                try
+                {
+                    findList(listSLi, name)->push(stoi(entry));
+                }
+                catch (NonexistantListException e)
+                {
+                    output << "ERROR: This name does not exist!" << '\n';
+                }
+            }
+            if (simpListType == 'd')
+            {
+                try
+                {
+                    findList(listSLd, name)->push(stod(entry));
+                }
+                catch (NonexistantListException e)
+                {
+                    output << "ERROR: This name does not exist!" << '\n';
+                }
+            }
+            if (simpListType == 's')
+            {
+                try
+                {
+                    findList(listSLs, name);
+                }
+                catch (NonexistantListException e)
+                {
+                    output << "ERROR: This name does not exist!" << '\n';
+                }
+            }
+            continue;
         }
         //  exit if we reach the end of the file.
         if (input.eof())
@@ -308,29 +361,38 @@ SimpleList<T> *findList(list<SimpleList<T> *> searchThru, string name)
             return *pos;
         }
     }
-    return nullptr;
+    throw NonexistantListException();
 }
 
 // creates a new simple list given a name and type of list, and shoves it into a given list.
 template <typename T>
-void addToList(list<SimpleList<T> *> inputList, string name, string entry)
+void addToList(list<SimpleList<T> *> *inputList, string name, string entry)
 {
-    SimpleList<T> *newSimpleList;
-
     if (entry.compare("stack") == 0)
     {
-        newSimpleList = new Stack<T>(name);
+        inputList->push_front(new Stack<T>(name));
     }
     else
     {
-        newSimpleList = new Queue<T>(name);
+        inputList->push_front(new Queue<T>(name));
     }
-    inputList.push_front(newSimpleList);
 
     return;
 }
 
 int main()
 {
+    string input;
+    string output;
+
+    // cout << "Enter name of input file: " << '\n';
+    // cin >> input;
+    // cout << "Enter name of output file: " << '\n';
+    // cin >> output;
+
+    input = "commands1.txt";
+    output = "output";
+    readInput(input, output);
+
     return 0;
 }
