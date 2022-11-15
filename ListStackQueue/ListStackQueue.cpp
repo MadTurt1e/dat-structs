@@ -329,7 +329,7 @@ void readInput(string inputName, string outputName)
             {
                 try
                 {
-                    findList(listSLs, name);
+                    findList(listSLs, name) -> push(entry);
                 }
                 catch (NonexistantListException e)
                 {
