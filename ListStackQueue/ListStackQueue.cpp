@@ -137,6 +137,9 @@ protected:
             pointerToStart = headerNode->getNextValue();
             output = pointerToStart->getCurrentValue();
             headerNode->setNextValue(pointerToStart->getNextValue());
+
+            //anti memory leak i think
+            delete pointerToStart;
             return output;
         }
         // empty
@@ -201,6 +204,11 @@ void readInput(string inputName, string outputName)
     string name = "";
     string entry = "";
 
+    // so we don't write Value popped: ERROR...
+    int iValue;
+    double dValue;
+    string sValue;
+
     // for keeping track of the type
     char simpListType;
 
@@ -221,17 +229,20 @@ void readInput(string inputName, string outputName)
             {
                 if (simpListType == 'i')
                 {
-                    output << "Value popped: " << findList(listSLi, name)->pop() << '\n';
+                    iValue = findList(listSLi, name)->pop();
+                    output << "Value popped: " << iValue << '\n';
                 }
                 else if (simpListType == 'd')
                 {
-                    output << "Value popped: " << findList(listSLd, name)->pop() << '\n';
+                    dValue = findList(listSLd, name)->pop();
+                    output << "Value popped: " << dValue << '\n';
                 }
                 else if (simpListType == 's')
                 {
-                    output << "Value popped: " << findList(listSLs, name)->pop() << '\n';
+                    sValue = findList(listSLs, name)->pop();
+                    output << "Value popped: " << sValue << '\n';
                 }
-            }
+            }//pop is special in that we can have two ways to mess up! 
             catch (NonexistantListException e)
             {
                 output << "ERROR: This name does not exist!" << '\n';
@@ -243,6 +254,7 @@ void readInput(string inputName, string outputName)
 
             continue;
         }
+        // this code runs only if pop does not happen
         else
         {
 
@@ -258,7 +270,7 @@ void readInput(string inputName, string outputName)
             output << "PROCESSING COMMAND: " << action << " " << name << " " << entry << '\n';
             // steps: we check to make sure the name isn't already there, then we add the thing in.
 
-            // this is kinda scuffed, but we want it so that any time no error appears, it just goes to the end of the thing. So it has to get to the end of the chain to actually go on.
+            // this is kinda scuffed, but we want it so that any time no error appears, it just goes to the end of the thing. So it has to get to the end of the chain to actually do a create
             try
             {
                 findList(listSLi, name);
@@ -280,7 +292,7 @@ void readInput(string inputName, string outputName)
                     }
                     catch (NonexistantListException e)
                     {
-                        //runs if none of the lists have the NonexistantListException
+                        // runs if none of the lists have the NonexistantListException
                         if (simpListType == 'i')
                         {
                             addToList(&listSLi, name, entry);
@@ -302,38 +314,24 @@ void readInput(string inputName, string outputName)
         if (action.compare("push") == 0)
         {
             output << "PROCESSING COMMAND: " << action << " " << name << " " << entry << '\n';
-            if (simpListType == 'i')
+            try
             {
-                try
+                if (simpListType == 'i')
                 {
                     findList(listSLi, name)->push(stoi(entry));
                 }
-                catch (NonexistantListException e)
-                {
-                    output << "ERROR: This name does not exist!" << '\n';
-                }
-            }
-            if (simpListType == 'd')
-            {
-                try
+                if (simpListType == 'd')
                 {
                     findList(listSLd, name)->push(stod(entry));
                 }
-                catch (NonexistantListException e)
+                if (simpListType == 's')
                 {
-                    output << "ERROR: This name does not exist!" << '\n';
+                    findList(listSLs, name)->push(entry);
                 }
             }
-            if (simpListType == 's')
+            catch (NonexistantListException e)
             {
-                try
-                {
-                    findList(listSLs, name) -> push(entry);
-                }
-                catch (NonexistantListException e)
-                {
-                    output << "ERROR: This name does not exist!" << '\n';
-                }
+                output << "ERROR: This name does not exist!" << '\n';
             }
             continue;
         }
