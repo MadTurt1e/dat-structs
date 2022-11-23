@@ -17,3 +17,6 @@ ListStackQueue/.vscode/tasks.json
 ListStackQueue/ListStackQueue
 ListStackQueue/ListStackQueue.exe
 ListStackQueue/output
+Sorting/.vscode/c_cpp_properties.json
+Sorting/.vscode/launch.json
+Sorting/.vscode/settings.json
