@@ -111,7 +111,13 @@ int main() {
 // You may add global variables, functions, and/or
 // class defintions here if you wish.
 
-void sortDataList(list<Data *> &l) {
-  // Fill this in
+/********************************************************
+ * Richard Chung            sortingExperience.cpp
+ * 
+ * Sorts the nodes of a linked list. 
+*********************************************************/
 
+//Gets a linked list as input, and will rewrite the linked list to reach the correct output. 
+void sortDataList(list<Data *> &l) {
+  int size = l.size();
 }

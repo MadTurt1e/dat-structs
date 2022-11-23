@@ -20,3 +20,8 @@ ListStackQueue/output
 Sorting/.vscode/c_cpp_properties.json
 Sorting/.vscode/launch.json
 Sorting/.vscode/settings.json
+Sorting/a.exe
+Sorting/output
+.gitignore
+Sorting/sortingExperience.exe
+Sorting/.vscode/tasks.json
