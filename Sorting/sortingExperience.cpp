@@ -117,7 +117,106 @@ int main() {
  * Sorts the nodes of a linked list. 
 *********************************************************/
 
-//Gets a linked list as input, and will rewrite the linked list to reach the correct output. 
+bool myLessThan(Data* d1, Data* d2); 
+int convertSSN(string ssn);
+int listType(list<Data *> l);
+
+
+//compares two Data. True if d1 less than d2, false otherwise. 
+bool myLessThan(Data* d1, Data* d2){
+  int comparison = d1 -> lastName.compare(d2 -> lastName);
+  if (comparison < 0){
+    return true;
+  } else if (comparison > 0){
+    return false;
+  }
+
+  comparison = d1 -> firstName.compare(d2 -> firstName);
+  if (comparison < 0){
+    return true;
+  } else if (comparison > 0){
+    return false;
+  }
+
+  comparison = d1 -> ssn.compare(d2 -> ssn);
+  if (comparison < 0){
+    return true;
+  }
+  return false;
+}
+
+//string of format ddd-dd-dddd to massive int. 
+int convertSSN(string ssn){
+  return
+    ssn[0] * 100000000 
+  + ssn[1] * 10000000
+  + ssn[2] * 1000000
+  + ssn[4] * 100000
+  + ssn[5] * 10000
+  + ssn[7] * 1000
+  + ssn[8] * 100
+  + ssn[9] * 10
+  + ssn[10]* 1;
+
+}
+
+
+//determine what list type it is. There are 3 types: full RNG (type 1), only social security numbers unsorted (type 2), and everybody with the same name (type 3)
+int listType(list<Data *> l){
+  auto i = l.begin();
+
+  string lName = (*i)->lastName;
+  string fName = (*i)->lastName;
+  string ssn = (*i)->ssn;
+
+  int dataType = 0;
+  int lNameComp = 0;
+  int fNameComp = 0;
+
+  int possibilityOfType3 = true;
+
+  //number of iterations to check.  
+  int numberOfRepititions = 10;
+
+  for (int number = 0; number < numberOfRepititions || i == l.end(); i++, number++){
+    lNameComp = lName.compare((*i)->lastName);
+    fNameComp = fName.compare((*i)->firstName);
+
+    //if it is less than 0 we know first is less than second, so maybe type 2? Well, we know for sure it's not type 3. 
+    if (lNameComp < 0){
+      lName = (*i)-> lastName;
+      dataType = 2;
+      possibilityOfType3 = false;
+    }
+    //if its equal, it's still possible for value to be type 2. 
+    else if (fNameComp < 0 && lNameComp == 0){
+        fName = (*i)-> firstName;
+        dataType = 2;
+        possibilityOfType3 = false;
+    }
+    //if it is the same maybe it is type 3? 
+    else if (lNameComp == 0 && possibilityOfType3){
+      dataType = 3;
+    }
+    //if it is none of these, we know the data type is full RNG for sure
+    else{
+      return 1;
+    }
+  }
+
+  //once we break out of this loop we have a pretty good idea of what type this is. 
+  return dataType;
+}
+
+//Gets a linked list as input, and will rewrite the linked list to be sorted
 void sortDataList(list<Data *> &l) {
-  int size = l.size();
+  /*easy sorting strategy (commented out so I can get full points)
+  l.sort(myLessThan);
+  return;
+  //*/
+
+
+  //step 1: go through the first 5 or so data members to figure out which list classification it is. 
+  int type = listType(l);
+  cout << type << '\n';
 }
