@@ -117,13 +117,20 @@ int main() {
  * Sorts the nodes of a linked list. 
 *********************************************************/
 
-bool myLessThan(Data* d1, Data* d2); 
+#include <queue>
+//vector of 90 as in there are 90 ascii values from NUL to Z. 
+vector<queue<Data*>> bucketOfBuckets(90);
+
+
+bool myLessThanFull(Data* d1, Data* d2); 
 int convertSSN(string ssn);
 int listType(list<Data *> l);
-
+void radixSort(list<Data *> &);
+void radixSortSSN(list<Data*> &);
+void insertionSort(list<Data*> &, int, int);
 
 //compares two Data. True if d1 less than d2, false otherwise. 
-bool myLessThan(Data* d1, Data* d2){
+bool myLessThanFull(Data* d1, Data* d2){
   int comparison = d1 -> lastName.compare(d2 -> lastName);
   if (comparison < 0){
     return true;
@@ -166,37 +173,45 @@ int listType(list<Data *> l){
   auto i = l.begin();
 
   string lName = (*i)->lastName;
-  string fName = (*i)->lastName;
+  string fName = (*i)->firstName;
   string ssn = (*i)->ssn;
 
   int dataType = 0;
   int lNameComp = 0;
   int fNameComp = 0;
 
-  int possibilityOfType3 = true;
-
   //number of iterations to check.  
+
   int numberOfRepititions = 10;
 
   for (int number = 0; number < numberOfRepititions || i == l.end(); i++, number++){
+
+   
+
+    
     lNameComp = lName.compare((*i)->lastName);
-    fNameComp = fName.compare((*i)->firstName);
 
     //if it is less than 0 we know first is less than second, so maybe type 2? Well, we know for sure it's not type 3. 
     if (lNameComp < 0){
       lName = (*i)-> lastName;
+      fName = (*i)-> firstName;
       dataType = 2;
-      possibilityOfType3 = false;
     }
-    //if its equal, it's still possible for value to be type 2. 
-    else if (fNameComp < 0 && lNameComp == 0){
+    //if the last name is the same we have to check other stuff 
+    else if (lNameComp == 0){
+      //running this only here is faster, i hope
+      fNameComp = fName.compare((*i)->firstName);
+
+      //We check if the first name is in order
+      if(fNameComp){
         fName = (*i)-> firstName;
         dataType = 2;
-        possibilityOfType3 = false;
-    }
-    //if it is the same maybe it is type 3? 
-    else if (lNameComp == 0 && possibilityOfType3){
-      dataType = 3;
+      }
+
+      //if last name is the same and the first name is the same it might be type 3. 
+      else if(fNameComp == 0){
+        dataType = 3;
+      }
     }
     //if it is none of these, we know the data type is full RNG for sure
     else{
@@ -208,15 +223,86 @@ int listType(list<Data *> l){
   return dataType;
 }
 
-//Gets a linked list as input, and will rewrite the linked list to be sorted
-void sortDataList(list<Data *> &l) {
-  /*easy sorting strategy (commented out so I can get full points)
-  l.sort(myLessThan);
-  return;
-  //*/
+//raddix sort! calss the ssn sort to sort ssns, but does some other wacky stuff later
+void radixSort(list<Data*> &l){
+  //step 1: sort by SSNs first
+  radixSortSSN(l);
 
+  //step 2: sort first names
 
-  //step 1: go through the first 5 or so data members to figure out which list classification it is. 
+}
+
+// uses raddix sort to sort ssns only
+void radixSortSSN(list<Data *> &l)
+{
+  clock_t t1 = clock();
+  // goes through all 11 SSN characters
+  for (int charNum = 10; charNum >= 0; charNum--)
+  {
+    //skip character 3 and 6 because they are hyphens
+    if (charNum == 3 || charNum == 6){
+      continue;
+    }
+    // scan the entire list
+    for (auto i = l.begin(); i != l.end(); i++)
+    {
+      bucketOfBuckets[((*i)->ssn)[charNum]].push(*i); // stick the data pointer into the bucket
+    }
+
+    list<Data*>::iterator it = l.begin();
+    // sticks all the values from the relevant superbucket buckets back into the original vector
+    for (int j = 48; j <= 57; j++)
+    {
+      // pop all the values until the thing is empty
+      while (!bucketOfBuckets[j].empty())
+      {
+        (*it) = (bucketOfBuckets[j].front());
+        bucketOfBuckets[j].pop();
+        it++;
+      }
+      if (it == l.end()){
+        break;
+      }
+    }
+  }
+}
+
+//insertion sort! Runs for the small chunks found in type2 sorting where both first and last names are the same. 
+void insertionSort(list<Data*> &l, int start, int end){
+
+}
+
+void type1Sort(list<Data*> &l){
+  radixSort(l);
+}
+void type2Sort(list<Data*> &l){
+  
+}
+void type3Sort(list<Data*> &l){
+  radixSortSSN(l);
+}
+
+// Gets a linked list as input, and will rewrite the linked list to be sorted
+void sortDataList(list<Data *> &l)
+{
+  // step 1: go through the first 5 or so data members to figure out which list classification it is.
   int type = listType(l);
-  cout << type << '\n';
+
+  // each type has different necessities.
+  switch (type)
+  {
+  case 1:
+    type1Sort(l);
+    break;
+  case 2:
+    type2Sort(l);
+    break;
+  case 3:
+    type3Sort(l);
+    break;
+  default:
+    // if we reach default, we just use bad sort.
+    l.sort(myLessThanFull);
+    break;
+  }
 }
