@@ -129,7 +129,7 @@ int main()
 
 #include <queue>
 // bucket that can be reused for a bunch of stuff
-vector<vector<Data *>> bucketOfBuckets(600, vector<Data *>(1100000));
+vector<vector<Data *>> bucketOfBuckets(600, vector<Data *>(500000));
 
 // global variables for keeping track of the position in each individual bucket.
 vector<int> startLoc(10000);
