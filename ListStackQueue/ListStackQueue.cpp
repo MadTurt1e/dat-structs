@@ -50,17 +50,20 @@ private:
             *currentValue = current;
             nextValue = next;
         }
+        //So you can set stuff to nullpointer. The nullpointer doesn't really do anything, but it is just here for convention because strings don't work with NULL value
         Node(T *current, Node *next)
         {
             currentValue = current;
             nextValue = next;
         }
 
-        // changes currentValue to something else
-        void setCurrentValue(T *current)
-        {
-            currentValue = current;
-        }
+        //I notice we don't need to change currentValue ever, so this section is commented out. 
+        // // changes currentValue to something else
+        // void setCurrentValue(T *current)
+        // {
+        //     currentValue = current;
+        // }
+
         // returns currentValue
         T getCurrentValue()
         {
@@ -96,6 +99,7 @@ public:
         headerNode = new Node(nullptr, tailNode);
     }
 
+    //getName is public
     string getName()
     {
         return name;
@@ -147,6 +151,7 @@ protected:
     }
 };
 
+//think of this like a stack of paper
 template <typename T>
 class Stack : public SimpleList<T>
 {
@@ -164,6 +169,7 @@ public:
     }
 };
 
+//think of this like a tube of paper
 template <typename T>
 class Queue : public SimpleList<T>
 {
@@ -379,14 +385,17 @@ void addToList(list<SimpleList<T> *> *inputList, string name, string entry)
 
 int main()
 {
+    //inputoutput
     string input;
     string output;
 
+    //user input
     cout << "Enter name of input file: " << '\n';
     cin >> input;
     cout << "Enter name of output file: " << '\n';
     cin >> output;
 
+    //runs the function
     readInput(input, output);
 
     return 0;
