@@ -91,7 +91,7 @@ int main()
 {
   string filename;
   cout << "Enter name of input file: ";
-  filename = "input4.txt";
+  filename = "input1.txt";
   // cin >> filename;
   list<Data *> theList;
   loadDataList(theList, filename);
@@ -129,7 +129,7 @@ int main()
 
 #include <queue>
 // bucket that can be reused for a bunch of stuff
-vector<vector<Data *>> bucketOfBuckets(600, vector<Data *>(500000));
+vector<vector<Data *>> bucketOfBuckets(500, vector<Data *>(1100000));
 
 // global variables for keeping track of the position in each individual bucket.
 vector<int> startLoc(10000);
@@ -322,15 +322,6 @@ void radixSort(list<Data *> *l)
   } // everything is now sorted.
 }
 
-//function that gets powers of 1000
-int pow1k(int power){
-  int output = 1;
-  for(int i = 0; i < power; ++i){
-    output *= 1000;
-  }
-  return output;
-}
-
 // uses raddix sort to sort ssns only
 void radixSortSSN(list<Data *>* l)
 {
@@ -404,7 +395,7 @@ void sortDataList(list<Data *> &l)
   switch (type)
   {
   case 1:
-    type1Sort(&l);
+    type1Sort(&l); //TODO: finish super insertion sort
     break;
   case 2:
     type1Sort(&l);
