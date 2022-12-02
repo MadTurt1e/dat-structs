@@ -16,8 +16,7 @@
 using namespace std;
 
 // A simple class; each object holds four public fields
-class Data
-{
+class Data {
 public:
   string lastName;
   string firstName;
@@ -25,12 +24,10 @@ public:
 };
 
 // Load the data from a specified input file
-void loadDataList(list<Data *> &l, const string &filename)
-{
+void loadDataList(list<Data *> &l, const string &filename) {
 
   ifstream input(filename);
-  if (!input)
-  {
+  if (!input) {
     cerr << "Error: could not open " << filename << "\n";
     exit(1);
   }
@@ -43,8 +40,7 @@ void loadDataList(list<Data *> &l, const string &filename)
   ss >> size;
 
   // Load the data
-  for (int i = 0; i < size; i++)
-  {
+  for (int i = 0; i < size; i++) {
     getline(input, line);
     stringstream ss2(line);
     Data *pData = new Data();
@@ -56,12 +52,10 @@ void loadDataList(list<Data *> &l, const string &filename)
 }
 
 // Output the data to a specified output file
-void writeDataList(const list<Data *> &l, const string &filename)
-{
+void writeDataList(const list<Data *> &l, const string &filename) {
 
   ofstream output(filename);
-  if (!output)
-  {
+  if (!output) {
     cerr << "Error: could not open " << filename << "\n";
     exit(1);
   }
@@ -71,11 +65,10 @@ void writeDataList(const list<Data *> &l, const string &filename)
   output << size << "\n";
 
   // Write the data
-  for (auto pData : l)
-  {
-    output << pData->lastName << " "
-           << pData->firstName << " "
-           << pData->ssn << "\n";
+  for (auto pData:l) {
+    output << pData->lastName << " " 
+	   << pData->firstName << " " 
+	   << pData->ssn << "\n";
   }
 
   output.close();
@@ -87,12 +80,10 @@ void sortDataList(list<Data *> &);
 
 // The main function calls routines to get the data, sort the data,
 // and output the data. The sort is timed according to CPU time.
-int main()
-{
+int main() {
   string filename;
   cout << "Enter name of input file: ";
-  filename = "input1.txt";
-  // cin >> filename;
+  cin >> filename;
   list<Data *> theList;
   loadDataList(theList, filename);
 
@@ -102,13 +93,12 @@ int main()
   clock_t t1 = clock();
   sortDataList(theList);
   clock_t t2 = clock();
-  double timeDiff = ((double)(t2 - t1)) / CLOCKS_PER_SEC;
+  double timeDiff = ((double) (t2 - t1)) / CLOCKS_PER_SEC;
 
   cout << "Sort finished. CPU time was " << timeDiff << " seconds.\n";
 
   cout << "Enter name of output file: ";
-  filename = "output";
-  // cin >> filename;
+  cin >> filename;
   writeDataList(theList, filename);
 
   return 0;
@@ -118,16 +108,6 @@ int main()
 // YOU MAY NOT CHANGE OR ADD ANY CODE ABOVE HERE !!!
 // -------------------------------------------------
 
-// You may add global variables, functions, and/or
-// class defintions here if you wish.
-
-/********************************************************
- * Richard Chung            sortingExperience.cpp
- *
- * Sorts the nodes of a linked list.
- *********************************************************/
-
-#include <queue>
 // bucket that can be reused for a bunch of stuff
 vector<vector<Data *>> bucketOfBuckets(500, vector<Data *>(1100000));
 
@@ -390,7 +370,6 @@ void sortDataList(list<Data *> &l)
   // step 1: go through the first 5 or so data members to figure out which list classification it is.
   int type = listType(&l);
 
-  cout << type << '\n';
   // each type has different necessities.
   switch (type)
   {
