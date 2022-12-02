@@ -109,7 +109,7 @@ int main() {
 // -------------------------------------------------
 
 // bucket that can be reused for a bunch of stuff
-vector<vector<Data *>> bucketOfBuckets(500, vector<Data *>(1100000));
+vector<vector<Data *>> bucketOfBuckets(500, vector<Data *>(500000));
 
 // global variables for keeping track of the position in each individual bucket.
 vector<int> startLoc(10000);
@@ -242,6 +242,8 @@ void radixSort(list<Data *> *l)
     //this beefy thing basically searches all the first names to figure out where it is in relation to the relevant value
     radixing = distance(firstNamesSorted.begin(), lower_bound(firstNamesSorted.begin(), firstNamesSorted.end(), (*it)->firstName));
 
+    //what are the odds that more than half the list is just one name? 
+
     // when we break out of the loop we will have the index to stick the name in. endLoc basically just tells us where the next free location in the bucket is.
     bucketOfBuckets[radixing][endLoc[radixing]] = (*it);
     ++endLoc[radixing];
@@ -250,7 +252,7 @@ void radixSort(list<Data *> *l)
 
   it = l->begin();
   // stick it back into the list
-  for (int j = 0; j <= 500; ++j)
+  for (int j = 0; j <= bucketOfBuckets.size(); ++j)
   {
     // pop all the values until the thing is empty
     while (startLoc[j] != endLoc[j])
@@ -282,7 +284,7 @@ void radixSort(list<Data *> *l)
 
   it = l->begin();
   // stick it back into the list
-  for (int j = 0; j <= 500; j++)
+  for (int j = 0; j <= bucketOfBuckets.size(); j++)
   {
     // get the values until empty
     while (startLoc[j] != endLoc[j])
@@ -317,13 +319,20 @@ void radixSortSSN(list<Data *>* l)
     // scan the entire list
     for (it = l -> begin(); it != l -> end(); ++it)
     {
+      //a check to make sure the end does not esceed the array size
       tempChar = ((*it)->ssn)[charNum];
+
+      //a check to make sure the end does not esceed the array size -- if it does, we overflow to a new section of the array. 
+      while(endLoc[tempChar] + 1 > bucketOfBuckets[0].size()){
+        tempChar += 10;
+      }
+
       bucketOfBuckets[tempChar][endLoc[tempChar]] = (*it); // stick the data pointer into the bucket
       ++endLoc[tempChar];
     }
 
     list<Data*>::iterator it = l -> begin();
-    // sticks all the values from the relevant superbucket buckets back into the original vector
+    // sticks all the values from the relevant superbucket buckets back into the original vector.
     for (int j = 48; j <= 57; j++)
     {
       // pop all the values until the thing is empty
@@ -333,6 +342,21 @@ void radixSortSSN(list<Data *>* l)
         ++startLoc[j];
         ++it;
       }
+      //reset the locations for this specific value
+      startLoc[j] = 0;
+      endLoc[j] = 0;
+
+      //check for any potential overflow values. 
+
+      while (startLoc[j+10] != endLoc[j+10])
+      {
+        (*it) = (bucketOfBuckets[j][startLoc[j+10]]);
+        ++startLoc[j+10];
+        ++it;
+      }
+      //reset the locations for this specific value
+      startLoc[j+10] = 0;
+      endLoc[j+10] = 0;
     }
   }
 }
