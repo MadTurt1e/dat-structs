@@ -326,11 +326,10 @@ void radixSortSSN(list<Data *>* l)
     // scan the entire list
     for (it = l -> begin(); it != l -> end(); ++it)
     {
-      //a check to make sure the end does not esceed the array size
       tempChar = ((*it)->ssn)[charNum];
 
-      //a check to make sure the end does not esceed the array size -- if it does, we overflow to a new section of the array. 
-      while(endLoc[tempChar] + 1 > bucketOfBuckets[0].size()){
+      //a check to make sure the end does not esceed the array size -- if it does, we overflow to a new section of the array. We only do this overflow once, so there better not be 1 million items with one value
+      if(endLoc[tempChar] >= bucketOfBuckets[0].size()){
         tempChar += 10;
       }
 
@@ -351,17 +350,17 @@ void radixSortSSN(list<Data *>* l)
       }
       //reset the locations for this specific value
       startLoc[j] = 0;
-      endLoc[j] = 0;
+        endLoc[j] = 0;
 
-      //check for any potential overflow values. 
-
-      while (startLoc[j+10] != endLoc[j+10])
+      //check the overflow bucket
+      while (startLoc[j + 10] != endLoc[j + 10])
       {
-        (*it) = (bucketOfBuckets[j][startLoc[j+10]]);
-        ++startLoc[j+10];
+        (*it) = (bucketOfBuckets[j][startLoc[j + 10]]);
+        ++startLoc[j + 10];
         ++it;
       }
-      //reset the locations for this specific value
+
+      //reset the locations for the overflow bucket value
       startLoc[j+10] = 0;
       endLoc[j+10] = 0;
     }
@@ -387,7 +386,7 @@ void insertionSortDivideAndConquer(list<Data *> *l)
   // we want to go through the entire list
   for (it = l->begin(); it != l->end(); ++it)
   {
-    // step 1: while the first names are the same, we just iterate and chuck the Data* pointer into the superBucket. We're just kind of treating the superbucket as a vector here, because we are short on memory. 
+    // step 1: while the first names are the same, we just iterate and chuck the Data* pointer into the superBucket. We're just kind of treating the superbucket as a vector here, because we are memory limited.  
     if((*it) -> firstName == fName){
       bucketOfBuckets[0][index] = (*it);
       ++index;
