@@ -125,9 +125,16 @@ vector<string> lastNamesSorted = {"ACOSTA", "ADAMS", "ADKINS", "AGUILAR", "AGUIR
 bool myLessThanFull(Data *d1, Data *d2);
 int convertSSN(string ssn);
 int listType(list<Data *> *l);
+
 void radixSort(list<Data *> *);
 void radixSortSSN(list<Data *> *);
+
 void insertionSortDivideAndConquer(list<Data *> *);
+void insertionSort(int, list<Data *>:: iterator*);
+
+void type1Sort(list<Data *> *l);
+void type2Sort(list<Data *> *l);
+void type3Sort(list<Data *> *l);
 
 // compares two Data. True if d1 less than d2, false otherwise.
 bool myLessThanFull(Data *d1, Data *d2)
@@ -364,14 +371,62 @@ void radixSortSSN(list<Data *>* l)
 // insertion sort! Runs for the small chunks found in type2 sorting where both first and last names are the same -- so basically just insertion sorts based on ssn.
 void insertionSortDivideAndConquer(list<Data *> *l)
 {
-  list<Data *>::iterator it;
-  int start = 0;
-  int end = 0;
+  list<Data *>::iterator it = l->begin();
+
+  string fName;
+  string lName;
+
+  fName = (*it) -> firstName;
+  lName = (*it) -> lastName;
+
+  int index = 0;
+
+  //iterator for actually sorting the list
+  list<Data *>:: iterator sorter= l -> begin();
 
   // we want to go through the entire list
   for (it = l->begin(); it != l->end(); ++it)
   {
-    // step 1: while the first and last names are the same, we just iterate and chuck the Data* pointer into the superBucket
+    // step 1: while the first names are the same, we just iterate and chuck the Data* pointer into the superBucket. We're just kind of treating the superbucket as a vector here, because we are short on memory. 
+    if((*it) -> firstName == fName){
+      bucketOfBuckets[0][index] = (*it);
+      ++index;
+    }
+    //if it's not the same, we run insertion sort, stick all the sorted stuff into the list, and continue on. 
+    else{
+      insertionSort(index, &sorter);
+      index = 0;
+      fName = (*it) -> firstName;
+      --it;
+    }
+  }
+}
+
+//for doing insertion sort
+void insertionSort(int finalValue, list<Data *>:: iterator* sorter)
+{
+  int pos;
+  Data* key;
+  int j;
+
+  for (pos = 1; pos < finalValue; ++pos)
+  {
+    //store a value as a key and take note of the value before it
+    key = bucketOfBuckets[0][pos];
+    j = pos - 1;
+
+    //swap as long as the key is smaller than whatever is to its left. 
+    while (j >= 0 && bucketOfBuckets[0][j]->ssn > key -> ssn)
+    {
+      bucketOfBuckets[0][j+1] = bucketOfBuckets[0][j];
+      j = j - 1;
+    }
+    bucketOfBuckets[0][j + 1] = key;
+  }//now the bucket is sorted up to the final value, and we can put the content back in to the function. 
+
+  for (int i = 0; i < finalValue; ++i){
+    *(*sorter) = bucketOfBuckets[0][i];
+    ++(*sorter);
   }
 }
 
@@ -398,10 +453,10 @@ void sortDataList(list<Data *> &l)
   switch (type)
   {
   case 1:
-    type1Sort(&l); //TODO: finish super insertion sort
+    type1Sort(&l); 
     break;
   case 2:
-    type1Sort(&l);
+    type2Sort(&l);
     break;
   case 3:
     type3Sort(&l);
