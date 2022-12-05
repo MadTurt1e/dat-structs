@@ -326,9 +326,9 @@ void radixSortSSN(list<Data *>* l)
       tempChar = ((*it)->ssn)[charNum];
 
       //a check to make sure the end does not esceed the array size -- if it does, we overflow to a new section of the array. We only do this overflow once, so there better not be 1 million items with one value
-      if(endLoc[tempChar] >= bucketOfBuckets[0].size()){
-        tempChar += 10;
-      }
+      // if(endLoc[tempChar] >= bucketOfBuckets[0].size()){
+      //   tempChar += 10;
+      // }
 
       bucketOfBuckets[tempChar][endLoc[tempChar]] = (*it); // stick the data pointer into the bucket
       ++endLoc[tempChar];
@@ -350,12 +350,12 @@ void radixSortSSN(list<Data *>* l)
         endLoc[j] = 0;
 
       //check the overflow bucket
-      while (startLoc[j + 10] != endLoc[j + 10])
-      {
-        (*it) = (bucketOfBuckets[j][startLoc[j + 10]]);
-        ++startLoc[j + 10];
-        ++it;
-      }
+      // while (startLoc[j + 10] != endLoc[j + 10])
+      // {
+      //   (*it) = (bucketOfBuckets[j][startLoc[j + 10]]);
+      //   ++startLoc[j + 10];
+      //   ++it;
+      // }
 
       //reset the locations for the overflow bucket value
       startLoc[j+10] = 0;
