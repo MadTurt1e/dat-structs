@@ -385,7 +385,7 @@ void insertionSortDivideAndConquer(list<Data *> *l)
   for (it = l->begin(); it != l->end(); ++it)
   {
     // step 1: while the first names are the same, we just iterate and chuck the Data* pointer into the superBucket. We're just kind of treating the superbucket as a vector here, because we are memory limited.  
-    if((*it) -> firstName == fName && (*it) -> lastName == lName){
+    if((*it) -> firstName == fName){
       bucketOfBuckets[0][index] = (*it);
       ++index;
     }
@@ -394,10 +394,11 @@ void insertionSortDivideAndConquer(list<Data *> *l)
       insertionSort(index, &sorter);
       index = 0;
       fName = (*it) -> firstName;
-      lName = (*it) -> lastName;
       --it;
     }
   }
+  //runs this thing one last time to "clear" the buffer. 
+  insertionSort(index, &sorter);
 }
 
 //for doing insertion sort
