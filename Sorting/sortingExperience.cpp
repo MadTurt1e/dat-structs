@@ -109,7 +109,7 @@ int main() {
 // -------------------------------------------------
 
 // bucket that can be reused for a bunch of stuff
-vector<vector<Data *>> bucketOfBuckets(500, vector<Data *>(300000));
+vector<vector<Data *>> bucketOfBuckets(500, vector<Data *>(500000));
 
 // global variables for keeping track of the position in each individual bucket.
 vector<int> startLoc(10000);
@@ -231,12 +231,10 @@ int listType(list<Data *> *l)
 // raddix sort! calss the ssn sort to sort ssns, but does some other wacky stuff later
 void radixSort(list<Data *> *l)
 {
-  // step 1: sort by SSNs first
-  radixSortSSN(l);
 
   int radixing = 0;
 
-  // step 2: sort first names
+  // step 1: sort first names
   list<Data *>::iterator it;
 
   vector<char*>::iterator find;
@@ -276,7 +274,7 @@ void radixSort(list<Data *> *l)
     }
   } // first names are now sorted.
 
-  // step 3: sort last names.
+  // step 2: sort last names.
   for (it = l->begin(); it != l->end(); ++it)
   {
     radixing = distance(lastNamesSorted.begin(), lower_bound(lastNamesSorted.begin(), lastNamesSorted.end(), (*it)->lastName));
@@ -306,6 +304,9 @@ void radixSort(list<Data *> *l)
       break;
     }
   } // everything is now sorted.
+
+  //step 3: why is insertion sort so fast
+  insertionSortDivideAndConquer(l);
 }
 
 // uses raddix sort to sort ssns only
@@ -384,7 +385,7 @@ void insertionSortDivideAndConquer(list<Data *> *l)
   for (it = l->begin(); it != l->end(); ++it)
   {
     // step 1: while the first names are the same, we just iterate and chuck the Data* pointer into the superBucket. We're just kind of treating the superbucket as a vector here, because we are memory limited.  
-    if((*it) -> firstName == fName){
+    if((*it) -> firstName == fName && (*it) -> lastName == lName){
       bucketOfBuckets[0][index] = (*it);
       ++index;
     }
@@ -393,6 +394,7 @@ void insertionSortDivideAndConquer(list<Data *> *l)
       insertionSort(index, &sorter);
       index = 0;
       fName = (*it) -> firstName;
+      lName = (*it) -> lastName;
       --it;
     }
   }
