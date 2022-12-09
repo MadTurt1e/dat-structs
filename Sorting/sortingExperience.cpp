@@ -122,6 +122,7 @@ vector<string> lastNamesSorted = {"ACOSTA", "ADAMS", "ADKINS", "AGUILAR", "AGUIR
 bool myLessThanFull(Data *d1, Data *d2);
 int convertSSN(string ssn);
 int listType(list<Data *> *l);
+int stringSearch(int nameType, string name);
 
 void radixSort(list<Data *> *);
 void radixSortSSN(list<Data *> *);
@@ -228,6 +229,136 @@ int listType(list<Data *> *l)
   return dataType;
 }
 
+int simplerSearch(string* name, int searchStart, int searchEnd, int nameType){
+  vector<string>::iterator begin;
+  vector<string>::iterator end;
+  if (nameType){
+    begin = lastNamesSorted.begin();
+    end = lastNamesSorted.begin();
+    advance(begin, searchStart);
+    advance(end, searchEnd);
+    return distance(lastNamesSorted.begin(), lower_bound(begin, end, *name));
+  }
+  else{
+    begin = firstNamesSorted.begin();
+    end = firstNamesSorted.begin();
+    advance(begin, searchStart);
+    advance(end, searchEnd);
+    return distance(firstNamesSorted.begin(), lower_bound(begin, end, *name));
+  }
+}
+//figures out the position of a specific name. type 0 is firstnames, type 1 is lastnames. 
+int stringSearch(int nameType, string name){
+  char firstChar = name[0];
+  char secondChar = name[1];
+  //lastnames
+  if(nameType){
+    switch(firstChar){
+      case 'A':
+      return simplerSearch(&name, 0, 15, 1);
+      case 'B':
+      return simplerSearch(&name, 16, 52, 1);
+      case 'C':
+      return simplerSearch(&name, 53, 98, 1);
+      case 'D':
+      return simplerSearch(&name, 99, 117, 1);
+      case 'E':
+      return simplerSearch(&name, 118, 124, 1);
+      case 'F':
+      return simplerSearch(&name, 125, 147, 1);
+      case 'G':
+      return simplerSearch(&name, 148, 178, 1);
+      case 'H':
+      return simplerSearch(&name, 179, 220, 1);
+      case 'I':
+      return 221;
+      case 'J':
+      return simplerSearch(&name, 222, 234, 1);
+      case 'K':
+      return simplerSearch(&name, 235, 243, 1);
+      case 'L':
+      return simplerSearch(&name, 244, 267, 1);
+      case 'M':
+      return simplerSearch(&name, 268, 313, 1);
+      case 'N':
+      return simplerSearch(&name, 314, 323, 1);
+      case 'O':
+      return simplerSearch(&name, 324, 331, 1);
+      case 'P':
+      return simplerSearch(&name, 332, 415, 1);
+      case 'Q':
+      return 360;
+      case 'R':
+      return simplerSearch(&name, 361, 396, 1);
+      case 'S':
+      return simplerSearch(&name, 396, 437, 1);
+      case 'T':
+      return simplerSearch(&name, 438, 450, 1);
+      case 'V':
+      return simplerSearch(&name, 451, 458, 1);
+      case 'W':
+      return simplerSearch(&name, 459, 495, 1);
+      case 'Y':
+      return simplerSearch(&name, 496, 497, 1);
+      case 'Z':
+      return simplerSearch(&name, 498, 499, 1);
+    }
+  }
+  else{
+    switch(firstChar){
+      case 'A':
+      return simplerSearch(&name, 0, 72, 0);
+      case 'B':
+      return simplerSearch(&name, 73, 99, 0);
+      case 'C':
+      return simplerSearch(&name, 100, 130, 0);
+      case 'D':
+      return simplerSearch(&name, 131, 148, 0);
+      case 'E':
+      return simplerSearch(&name, 149, 185, 0);
+      case 'F':
+      return simplerSearch(&name, 186, 191, 0);
+      case 'G':
+      return simplerSearch(&name, 191, 207, 0);
+      case 'H':
+      return simplerSearch(&name, 208, 221, 0);
+      case 'I':
+      return simplerSearch(&name, 222, 232, 0);
+      case 'J':
+      return simplerSearch(&name, 233, 285, 0);
+      case 'K':
+      return simplerSearch(&name, 284, 306, 0);
+      case 'L':
+      return simplerSearch(&name, 307, 339, 0);
+      case 'M':
+      return simplerSearch(&name, 340, 381, 0);
+      case 'N':
+      return simplerSearch(&name, 382, 396, 0);
+      case 'O':
+      return simplerSearch(&name, 397, 401, 0);
+      case 'P':
+      return simplerSearch(&name, 402, 415, 0);
+      case 'Q':
+      return simplerSearch(&name, 415, 416, 0);
+      case 'R':
+      return simplerSearch(&name, 417, 439, 0);
+      case 'S':
+      return simplerSearch(&name, 440, 463, 0);
+      case 'T':
+      return simplerSearch(&name, 464, 474, 0);
+      case 'V':
+      return simplerSearch(&name, 475, 483, 0);
+      case 'W':
+      return simplerSearch(&name, 484, 489, 0);
+      case 'X':
+      return simplerSearch(&name, 490, 492, 0);
+      case 'Z':
+      return simplerSearch(&name, 493, 499, 0);
+    }
+  }
+  return 0;
+}
+
 // raddix sort! calss the ssn sort to sort ssns, but does some other wacky stuff later
 void radixSort(list<Data *> *l)
 {
@@ -242,7 +373,7 @@ void radixSort(list<Data *> *l)
   for (it = l->begin(); it != l->end(); ++it)
   {
     //this beefy thing basically searches all the first names to figure out where it is in relation to the relevant value
-    radixing = distance(firstNamesSorted.begin(), lower_bound(firstNamesSorted.begin(), firstNamesSorted.end(), (*it)->firstName));
+    radixing = stringSearch(0, (*it) -> firstName);
 
     //what are the odds that more than half the list is just one name? 
 
@@ -277,7 +408,7 @@ void radixSort(list<Data *> *l)
   // step 2: sort last names.
   for (it = l->begin(); it != l->end(); ++it)
   {
-    radixing = distance(lastNamesSorted.begin(), lower_bound(lastNamesSorted.begin(), lastNamesSorted.end(), (*it)->lastName));
+    radixing = stringSearch(1, (*it) -> lastName);
 
     bucketOfBuckets[radixing][endLoc[radixing]] = (*it);
     ++endLoc[radixing];
@@ -309,35 +440,42 @@ void radixSort(list<Data *> *l)
   insertionSortDivideAndConquer(l);
 }
 
+//returns powers of 100
+int pow1k(int input){
+  int output = 1;
+  for (int i = 0; i < input; i++){
+    output *= 100;
+  }
+  return output;
+}
+
 // uses raddix sort to sort ssns only
 void radixSortSSN(list<Data *>* l)
 {
   list<Data*>::iterator it;
-  char tempChar;
-  // goes through all 11 SSN characters
-  for (int charNum = 10; charNum >= 0; charNum--)
-  {
-    //skip character 3 and 6 because they are hyphens
-    if (charNum == 3 || charNum == 6){
-      continue;
-    }
+  int temp;
+  int right2dig;
+  for (int i = 0; i < 5; ++i){
     // scan the entire list
     for (it = l -> begin(); it != l -> end(); ++it)
     {
-      tempChar = ((*it)->ssn)[charNum];
+      //clips off the rightmost i*2 digits
+      temp = (convertSSN((*it)->ssn))/pow1k(i);
+      right2dig = temp%100;
 
       //a check to make sure the end does not esceed the array size -- if it does, we overflow to a new section of the array. We only do this overflow once, so there better not be 1 million items with one value
       // if(endLoc[tempChar] >= bucketOfBuckets[0].size()){
       //   tempChar += 10;
       // }
 
-      bucketOfBuckets[tempChar][endLoc[tempChar]] = (*it); // stick the data pointer into the bucket
-      ++endLoc[tempChar];
+      //store into bucket based off of right 2 digits
+      bucketOfBuckets[right2dig][endLoc[right2dig]] = (*it); // stick the data pointer into the bucket
+      ++endLoc[right2dig];
     }
 
     list<Data*>::iterator it = l -> begin();
     // sticks all the values from the relevant superbucket buckets back into the original vector.
-    for (int j = 48; j <= 57; j++)
+    for (int j = 0; j < 100; ++j)
     {
       // pop all the values until the thing is empty
       while (startLoc[j] != endLoc[j])
@@ -348,7 +486,7 @@ void radixSortSSN(list<Data *>* l)
       }
       //reset the locations for this specific value
       startLoc[j] = 0;
-        endLoc[j] = 0;
+      endLoc[j] = 0;
 
       //check the overflow bucket
       // while (startLoc[j + 10] != endLoc[j + 10])
@@ -359,8 +497,8 @@ void radixSortSSN(list<Data *>* l)
       // }
 
       //reset the locations for the overflow bucket value
-      startLoc[j+10] = 0;
-      endLoc[j+10] = 0;
+      // startLoc[j+10] = 0;
+      // endLoc[j+10] = 0;
     }
   }
 }
